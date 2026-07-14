@@ -1,0 +1,41 @@
+name: Cross-Platform App Builder
+
+on:
+  push:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    name: Package All Platforms
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyyaml
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Node Dependencies
+        run: yarn install
+
+      - name: Run Trusted Compiler Script
+        run: python main.py "examples/Racers to Electron.yaml"
+
+      - name: Upload Generated Apps Folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: XP-Times-OS-Packages
+          path: dist/
