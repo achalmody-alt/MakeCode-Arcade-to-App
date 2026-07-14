@@ -1,4 +1,5 @@
 app_name: "XP Times OS"
 project_url: "https://makecode.com/_JWr4qqb29fM5"
 output: "tauri"
-targets: ["android"]
+targets: ["windows", "android", "macos"]
+
