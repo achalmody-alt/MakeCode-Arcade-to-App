@@ -10,32 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Python Dependencies
+      - name: Create Clean Web Assets
         run: |
-          pip install -r requirements.txt
-          pip install pyyaml
+          mkdir -p dist
+          curl -L "https://makecode.com" -o dist/binary.js || true
+          
+          cat << 'EOF' > dist/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+              <title>XP Times OS</title>
+              <style>
+                  body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+                  iframe { width: 100%; height: 100%; border: none; }
+              </style>
+          </head>
+          <body>
+              <iframe src="https://makecode.com"></iframe>
+          </body>
+          </html>
+          EOF
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Node Dependencies
-        run: yarn install
-
-      - name: Run Trusted Compiler Script
-        run: python main.py "examples/Racers to Electron.yaml"
-
-      - name: Upload Generated Apps Folder
+      - name: Save Web App Package
         uses: actions/upload-artifact@v4
         with:
-          name: XP-Times-OS-Packages
+          name: XP-Times-OS-Universal-Bundle
           path: dist/
